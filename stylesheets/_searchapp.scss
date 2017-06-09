@@ -216,7 +216,11 @@ rhdp-search-filters {
     }
 
     #footer { display: none; }
-
+    @media only screen and (min-width: 769px) {
+        &[type="modal"], &[type="modal"] .modal {
+            display: none;
+        }
+    }
     @media only screen and (max-width: 768px) {
         .control {
             display: flex;
