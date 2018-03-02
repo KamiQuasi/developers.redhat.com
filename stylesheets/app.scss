@@ -4,44 +4,54 @@
 @import "custom-font-icons";
 @import "fonts/fonts";
 @import "colours";
-@import "foundation/components/global"; // *always required
+html,
+    body { font-size: $base-font-size; }
+// Foundation Dependencies
+$white         : #FFFFFF !default;
+$screen: "only screen" !default;
+$small-up: $screen !default;
+$large-range: (64.063em, 90em) !default;
+$large-up: "#{$screen} and (min-width:#{lower-bound($large-range)})" !default;
+$input-border-color: scale-color($white, $lightness: -20%) !default;
+
+// @import "foundation/components/global"; // *always required
 $include-html-global-classes: false; // fix for our version of ruby - https://github.com/zurb/foundation/issues/5989
-@import "foundation/components/grid";
+// @import "foundation/components/grid";
 
-@import "foundation/components/visibility";
-@import "foundation/components/block-grid";
-@import "foundation/components/type";
-@import "foundation/components/buttons";
-@import "foundation/components/forms"; // *requires components/buttons 
+// @import "foundation/components/visibility";
+// @import "foundation/components/block-grid";
+// @import "foundation/components/type";
+// @import "foundation/components/buttons";
+// @import "foundation/components/forms"; // *requires components/buttons 
 
-@import "foundation/components/button-groups"; // *requires components/buttons
+// @import "foundation/components/button-groups"; // *requires components/buttons
 // @import "foundation/components/dropdown-buttons"; // *requires components/buttons
 // @import "foundation/components/split-buttons"; // *requires components/buttons
-@import "foundation/components/flex-video";
-@import "foundation/components/top-bar";  // *requires components/grid
+// @import "foundation/components/flex-video";
+// @import "foundation/components/top-bar";  // *requires components/grid
 // @import "foundation/components/orbit";
-@import "foundation/components/reveal";
+// @import "foundation/components/reveal";
 // @import "foundation/components/joyride";
-@import "foundation/components/alert-boxes";
-@import "foundation/components/breadcrumbs";
+// @import "foundation/components/alert-boxes";
+// @import "foundation/components/breadcrumbs";
 // @import "foundation/components/keystrokes";
 // @import "foundation/components/labels";
-@import "foundation/components/inline-lists";
-@import "foundation/components/pagination";
-@import "foundation/components/panels";
+// @import "foundation/components/inline-lists";
+// @import "foundation/components/pagination";
+// @import "foundation/components/panels";
 // @import "foundation/components/pricing-tables";
 // @import "foundation/components/progress-bars";
-@import "foundation/components/side-nav";
-@import "foundation/components/sub-nav";
-@import "foundation/components/switches";
+// @import "foundation/components/side-nav";
+// @import "foundation/components/sub-nav";
+// @import "foundation/components/switches";
 // @import "foundation/components/magellan";
-@import "foundation/components/tables";
+// @import "foundation/components/tables";
 // @import "foundation/components/thumbs";
-@import "foundation/components/tooltips";
-@import "foundation/components/dropdown";
-@import "foundation/components/tabs";
+// @import "foundation/components/tooltips";
+// @import "foundation/components/dropdown";
+// @import "foundation/components/tabs";
 
-@import "foundation/components/accordion";
+// @import "foundation/components/accordion";
 
 // Import only the compass modules we need
 // @import "compass/css3/box-shadow";
@@ -1126,11 +1136,11 @@ body.mobile {
 
 // Typography
 
-* {
-  -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+// * {
+//   -webkit-font-smoothing: antialiased;
+//   font-smoothing: antialiased;
+//   -moz-osx-font-smoothing: grayscale;
+// }
 
 .large-title {
   font-size: emCalc(44);
@@ -1555,11 +1565,11 @@ form.login {
 
 // Planet
 .planet-avatar {
-  @include block-grid(
-    $per-row: 6,
-    $spacing: 4px,
-    $base-style: true
-  );
+  // @include block-grid(
+  //   $per-row: 6,
+  //   $spacing: 4px,
+  //   $base-style: true
+  // );
 }
 
 .recent-posts-list {
