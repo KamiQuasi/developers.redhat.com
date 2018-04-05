@@ -10,10 +10,10 @@ body { margin: 0; padding: 0; }
 [data-rhd-grid="normal"] {
     display: flex;
     flex-direction: column;
+    align-items: center;
 
     display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    grid-template-rows: auto 1fr auto;
+    grid-template-columns: auto repeat(12, 70px) auto;
 }
 body > header,
 body > main,
