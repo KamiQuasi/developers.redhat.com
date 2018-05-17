@@ -24,13 +24,9 @@ export default class RHElement extends HTMLElement {
         }
     }
 
-    static get observedAttributes() { 
-        return ['url', 'name']; 
-    }
-
-    attributeChangedCallback(name, oldVal, newVal) {
-        this[name] = newVal;
-    }
+    // attributeChangedCallback(name, oldVal, newVal) {
+    //     this[name] = newVal;
+    // }
 
     render(template) {
         if (ShadyCSS) {

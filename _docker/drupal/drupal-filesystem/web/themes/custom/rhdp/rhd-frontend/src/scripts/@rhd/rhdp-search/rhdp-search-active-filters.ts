@@ -1,45 +1,44 @@
 import RHElement from '@rhelements/rhelement';
 import RHDPSearchFilterGroup from './rhdp-search-filter-group';
-import RHDPSearchFilterItem from './rhdp-search-filter-item';
+import RHDPSearchFilterItemInline from './rhdp-search-filter-item-inline';
 
-export default class RHDPSearchFilters extends RHElement {
+export default class RHDPSearchActiveFilters extends RHElement {
     template = el => {
         const tpl = document.createElement("template");
         tpl.innerHTML = `
         <style>
-            :host { 
-                grid-area: filters;
+            :host {
+                grid-area: activefilters;
+                margin-bottom: 30px;
+                display: flex;
+                flex-direction: row;
+                margin-bottom: 1em;
             }
-            .title {
-                background: #e6e7e8; 
-                color: #000;
-                text-transform: uppercase;
-                padding: .5em 1em;
-                font-weight: 600;
-            }
-            
-            .cancel { display: none; }
-            .showBtn { 
-                display: none;
-                background: #ccc;
-                text-decoration: none;
-                border: 0;
-                height: 40px;
-                font-weight: 600;
+
+            .clearFilters {
                 font-size: 16px;
-                padding: 9px 40px;
-                transition: background .2s ease-in 0s;
-                line-height: 1.2em;
-                cursor: pointer;
-                position: relative;
-                text-align: center;
-                color: #333; 
-                width: 100%;
-                }
-            .groups {
-                background-color: #f9f9f9;
-                padding-bottom: 30px;
-                padding-top: 1.2em;
+            }
+
+            strong {
+                flex: 0 1 auto; 
+                order: 1; 
+                font-weight: 600;
+                font-size: 1.2em;
+                margin: 0.3em .7em 0 0;
+                white-space: nowrap;
+            }
+
+            .active-type div { flex: 1 1 auto; order: 2; list-style: none; }
+            .active-type a {
+                flex: 0 1 auto;
+                order: 3;
+                text-decoration: none;
+                color: #0066CC;
+                margin-top: .3em;
+                font-weight: 100;
+                font-size: 14px;
+                white-space: nowrap;
+                &:hover, &:active, &:focus { color: #004080; }
             }
 
             @media only screen and (max-width: 768px) {
@@ -50,44 +49,13 @@ export default class RHDPSearchFilters extends RHElement {
                     border: none;
                     margin: 0; 
                 }
-
-                .control {
-                    display: flex;
-                    flex-direction: column;
-                    width: 100%;
-                    height: 100%;
-                    padding-top: 51px;
-                    background: rgba(0,0,0,.5);
-                    border: none;
-                    z-index: 99;
-                    right: 100%;
-                    position: absolute;
-                    top: 100px;
-                }
-                .title { flex: 0 0 40px; order: 1; vertical-align: middle; }
-                .showBtn {
-                    display: block;
-                    width: 150px;
-                    height: auto;
-                    border: 1px solid var(--rhd-blue);
-                    line-height: 1.44;
-                    background-color: transparent;
-                    padding: 8px 0;
-                    color: var(--rhd-blue);
-                }
-
-                .showBtn:hover, .showBtn:focus {
-                        background-color: var(--rhd-blue);
-                        color: var(--rhd-white);
-                }
             }
 
         </style>
-        <a class="showBtn">Show Filters</a>
-        <div class="control" id="control">
-            <div class="title">${el.title}</div>
-            <div class="groups">
-            </div>
+        <div class="active-type">
+            <strong>${el.title}</strong>
+            <div class="activeFilters"></div>
+            <a href="#" class="clearFilters">Clear Filters</a>
         </div>`;
         return tpl;
     }
@@ -144,7 +112,8 @@ export default class RHDPSearchFilters extends RHElement {
     }
 
     constructor() {
-        super('rhdp-search-filters');
+        super('rhdp-search-active-filters');
+        this._toggleModal = this._toggleModal.bind(this);
         this._clearFilters = this._clearFilters.bind(this);
         this._addFilters = this._addFilters.bind(this);
         this._checkActive = this._checkActive.bind(this);
@@ -152,10 +121,13 @@ export default class RHDPSearchFilters extends RHElement {
     
     connectedCallback() {
         super.render(this.template(this));
-        // this.setAttribute('data-rhd-col','span3');
-        // this.setAttribute('data-rhd-row', 'span5');
-        this.addGroups();
-        
+        top.addEventListener('filter-item-change', this._checkActive);
+        top.addEventListener('filter-item-init', this._checkActive);
+        top.addEventListener('search-complete', this._checkActive);
+        top.addEventListener('params-ready', this._checkActive);
+        top.addEventListener('clear-filters', this._clearFilters);
+        this._addFilters();
+
         this.shadowRoot.addEventListener('click', e => {
             let evt = { bubbles: true, composed: true };
             switch (e.target['className']) {
@@ -174,7 +146,6 @@ export default class RHDPSearchFilters extends RHElement {
                     break;
             }
         });
-        
     }
 
     static get observedAttributes() { 
@@ -193,7 +164,7 @@ export default class RHDPSearchFilters extends RHElement {
                 groupInfo = groups[i],
                 gLen = groupInfo.items.length;
                 for(let j=0; j < gLen; j++) {
-                    let item = new RHDPSearchFilterItem();
+                    let item = new RHDPSearchFilterItemInline();
                     item.name = groupInfo.items[j].name;
                     item.value = groupInfo.items[j].value;
                     item.active = groupInfo.items[j].active;
@@ -205,6 +176,7 @@ export default class RHDPSearchFilters extends RHElement {
             group.name = groupInfo.name;        
             this.shadowRoot.querySelector('.groups').appendChild(group);
         }
+
     }
 
     _checkActive(e) {
@@ -212,7 +184,7 @@ export default class RHDPSearchFilters extends RHElement {
             if (e.detail.facet) {
                 this.style.display = e.detail.facet.active ? 'block' : this.style.display;
             } else {
-                let chk = this.shadowRoot.querySelectorAll('rhdp-search-filter-item[active]');
+                let chk = this.shadowRoot.querySelectorAll('rhdp-search-filter-item-inline[active]');
                 if (chk.length > 0) {
                     this.style.display = 'block';
                 } else {
@@ -244,7 +216,7 @@ export default class RHDPSearchFilters extends RHElement {
         for(let i=0; i < groups.length; i++) {
             var items = groups[i].items;
             for(let j=0; j < items.length; j++) {
-                let item = new RHDPSearchFilterItem();
+                let item = new RHDPSearchFilterItemInline();
                     item.name = items[j].name;
                     item.value = items[j].value;
                     item.bubble = false;
@@ -256,6 +228,12 @@ export default class RHDPSearchFilters extends RHElement {
         // if (this.type === 'active') {
         //     this._checkActive();
         // }
+    }
+
+    _toggleModal(e) {
+        if (this.type === 'modal') {
+            this.toggle = !this.toggle;
+        }
     }
 
     applyFilters() {
@@ -271,4 +249,4 @@ export default class RHDPSearchFilters extends RHElement {
     }
 }
 
-customElements.define('rhdp-search-filters', RHDPSearchFilters);
+customElements.define('rhdp-search-active-filters', RHDPSearchActiveFilters);

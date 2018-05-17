@@ -1,9 +1,11 @@
-import RHElement from '../rhelement';
+import RHElement from '@rhelements/rhelement';
 import RHDPSearchURL from './rhdp-search-url';
 import RHDPSearchQuery from './rhdp-search-query';
 import RHDPSearchBox from './rhdp-search-box';
 import RHDPSearchResultCount from './rhdp-search-result-count';
 import RHDPSearchFilters from './rhdp-search-filters';
+import RHDPSearchActiveFilters from './rhdp-search-active-filters';
+import RHDPSearchModalFilters from './rhdp-search-modal-filters';
 import RHDPSearchOneBox from './rhdp-search-onebox';
 import RHDPSearchResults from './rhdp-search-results';
 import RHDPSearchSortPage from './rhdp-search-sort-page';
@@ -12,11 +14,23 @@ export default class RHDPSearchApp extends RHElement {
     template = el => {
         const tpl = document.createElement("template");
         tpl.innerHTML = `
-        <style>
+    <style>
 
     :host { 
         display: flex;
         flex-flow: column;
+        display: grid;
+        grid-template-columns: minmax(0,1fr) 300px minmax(0, 900px) minmax(0,1fr);
+        grid-template-rows: minmax(0, 4em) repeat(5, minmax(0, auto)); 
+        grid-template-areas: 
+            ". title   title ."
+            ". searchbox searchbox ."
+            ". filters activefilters ."
+            ". filters resultcount ."
+            ". filters sort ."
+            ". filters onebox ."
+            ". filters results .";
+        grid-column-gap: 30px;
         font-family: "overpass","Open Sans",Helvetica,sans-serif;
         margin-bottom: 30px;
     }
@@ -27,13 +41,30 @@ export default class RHDPSearchApp extends RHElement {
     
     .mobile { display: none; }
 
-    h1 { grid-column: 2 / span 12; }
+    h1 { grid-area: title; margin: 0; font-weight: 500; line-height: 1.24; }
 
     .loading {
         background:url("https://developers.redhat.com/images/icons/ajax-loader.gif") center 80px no-repeat;
         min-height:250px;
     }
-        </style>
+
+    @media only screen and (max-width: 768px) {
+        :host {
+            grid-template-areas:
+                "title title"
+                "searchbox searchbox"
+                "filters sort"
+                "activefilters activefilters"
+                "resultcount resultcount"
+                "onebox onebox"
+                "results results";
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(7, minmax(0, auto));
+            grid-column-gap: 15px;
+            margin: 15px;
+        }
+    }
+    </style>
     <span class="search-outage-msg"></span>
     <h1>${el.name}</h1>
     `;
@@ -74,8 +105,8 @@ export default class RHDPSearchApp extends RHElement {
     box = new RHDPSearchBox();
     count = new RHDPSearchResultCount();
     filters = new RHDPSearchFilters();
-    active = new RHDPSearchFilters();
-    modal = new RHDPSearchFilters();
+    active = new RHDPSearchActiveFilters();
+    modal = new RHDPSearchModalFilters();
     onebox = new RHDPSearchOneBox('/rhd-frontend/json/onebox.json');
     results = new RHDPSearchResults();
     sort = new RHDPSearchSortPage();
@@ -142,7 +173,7 @@ export default class RHDPSearchApp extends RHElement {
 
     connectedCallback() {
         super.render(this.template(this));
-        this.setAttribute('data-rhd-grid','normal');
+        //this.setAttribute('data-rhd-grid','normal');
         this.active.setAttribute('type', 'active');
         this.active.title = 'Active Filters:';
         this.modal.setAttribute('type', 'modal');

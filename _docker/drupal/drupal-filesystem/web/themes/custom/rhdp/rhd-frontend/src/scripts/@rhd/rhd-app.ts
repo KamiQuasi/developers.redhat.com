@@ -4,6 +4,7 @@ import DPCategory from './dp-category-list/dp-category';
 import DPCategoryItemList from './dp-category-list/dp-category-item-list';
 import DPCategoryItem from './dp-category-list/dp-category-item';
 import DPProductShortTeaser from './dp-category-list/dp-product-short-teaser';
+import RHDPSearchApp from './rhdp-search/rhdp-search-app';
 
 export default class RHDApp {
     a = new RHDPAlert();
@@ -12,4 +13,5 @@ export default class RHDApp {
     d = new DPCategoryItemList();
     e = new DPCategoryItem();
     f = new DPProductShortTeaser();
+    g = new RHDPSearchApp();
 }

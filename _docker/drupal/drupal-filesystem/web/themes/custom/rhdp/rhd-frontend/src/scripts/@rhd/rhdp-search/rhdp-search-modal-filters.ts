@@ -1,16 +1,16 @@
-import RHElement from '../rhelement';
+import RHElement from '@rhelements/rhelement';
 import RHDPSearchFilterGroup from './rhdp-search-filter-group';
 import RHDPSearchFilterItem from './rhdp-search-filter-item';
 
-export default class RHDPSearchFilters extends RHElement {
+export default class RHDPSearchModalFilters extends RHElement {
     template = el => {
         const tpl = document.createElement("template");
         tpl.innerHTML = `
         <style>
             :host {
-                grid-column: span 3;
-                grid-row: span 5;
+                display: none;
             }
+
             .title {
                 background: #e6e7e8; 
                 color: #000;
@@ -39,6 +39,7 @@ export default class RHDPSearchFilters extends RHElement {
             .groups {
                 background-color: #f9f9f9;
                 padding-bottom: 30px;
+                padding-top: 1.2em;
             }
             .active-type {
                 display: flex;
@@ -80,11 +81,10 @@ export default class RHDPSearchFilters extends RHElement {
             @media only screen and (max-width: 768px) {
                 :host {
                     flex: none; 
-                    align-self: 
-                    flex-start; 
+                    justify-self: center; 
                     float: left;
                     border: none;
-                    margin: 0 0 1.3em 0; 
+                    margin: 0; 
                 }
 
                 .control {
@@ -119,49 +119,16 @@ export default class RHDPSearchFilters extends RHElement {
             }
 
         </style>
-<a class="showBtn">Show Filters</a>
-<div class="control" id="control">
-    <div class="title">${el.title}</div>
-    <div class="groups">
-    </div>
-</div>`;
+        <div class="cover" id="cover">
+            <div class="title">${el.title} <a href="#" class="cancel" id="cancel">Close</a></div>
+            <div class="groups">
+            </div>
+            <div class="footer">
+            <a href="#" class="clearFilters">Clear Filters</a> 
+            <a href="#" class="applyFilters">Apply</a>
+            </div>
+        </div>`;
         return tpl;
-    }
-
-    modalTemplate = el => {
-        const tpl = document.createElement("template");
-        tpl.innerHTML = `
-        <style>
-            :host {
-                display: none;
-            }
-        </style>
-<div class="cover" id="cover">
-    <div class="title">${el.title} <a href="#" class="cancel" id="cancel">Close</a></div>
-    <div class="groups">
-    </div>
-    <div class="footer">
-    <a href="#" class="clearFilters">Clear Filters</a> 
-    <a href="#" class="applyFilters">Apply</a>
-    </div>
-</div>`;
-        return tpl;
-    }
-
-    activeTemplate = el => {
-        const tpl = document.createElement("template");
-        tpl.innerHTML = `
-        <style>
-            :host {
-                grid-column: 5 / span 9;
-            }
-        </style>
-<div class="active-type">
-    <strong>${el.title}</strong>
-    <div class="activeFilters"></div>
-    <a href="#" class="clearFilters">Clear Filters</a>
-</div>`;
-      return tpl;
     }
 
     _type = '';
@@ -216,7 +183,7 @@ export default class RHDPSearchFilters extends RHElement {
     }
 
     constructor() {
-        super('rhdp-search-filter');
+        super('rhdp-search-modal-filters');
         this._toggleModal = this._toggleModal.bind(this);
         this._clearFilters = this._clearFilters.bind(this);
         this._addFilters = this._addFilters.bind(this);
@@ -224,24 +191,8 @@ export default class RHDPSearchFilters extends RHElement {
     }
     
     connectedCallback() {
-        if (this.type === 'active') {
-            super.render(this.activeTemplate(this));
-            this.setAttribute('data-rhd-col','5span9');
-            top.addEventListener('filter-item-change', this._checkActive);
-            top.addEventListener('filter-item-init', this._checkActive);
-            top.addEventListener('search-complete', this._checkActive);
-            top.addEventListener('params-ready', this._checkActive);
-            top.addEventListener('clear-filters', this._clearFilters);
-            this._addFilters();
-        } else if (this.type === 'modal') {
-            super.render(this.modalTemplate(this));
-            this.addGroups();
-        } else {
-            super.render(this.template(this));
-            this.setAttribute('data-rhd-col','span3');
-            this.setAttribute('data-rhd-row', 'span5');
-            this.addGroups();
-        }
+        super.render(this.template(this));
+        this.addGroups();
 
         this.shadowRoot.addEventListener('click', e => {
             let evt = { bubbles: true, composed: true };
@@ -337,7 +288,6 @@ export default class RHDPSearchFilters extends RHElement {
                 let item = new RHDPSearchFilterItem();
                     item.name = items[j].name;
                     item.value = items[j].value;
-                    item.inline = true;
                     item.bubble = false;
                     item.key = items[j].key;
                     item.group = groups[i].key;
@@ -368,4 +318,4 @@ export default class RHDPSearchFilters extends RHElement {
     }
 }
 
-customElements.define('rhdp-search-filters', RHDPSearchFilters);
+customElements.define('rhdp-search-modal-filters', RHDPSearchModalFilters);

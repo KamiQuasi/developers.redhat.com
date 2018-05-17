@@ -2,19 +2,32 @@ rhdp-search-app {
     display: flex;
     flex-flow: column;
     font-family: "overpass","Open Sans",Helvetica,sans-serif;
+
+    display: grid;
+    grid-template-areas: 
+        "title   title"
+        "searchbox searchbox"
+        "filters activefilters"
+        "filters resultcount"
+        "filters sort"
+        "filters onebox"
+        "filters results";
+
     .hide { display: none; }
     .show { display: block; }
     .mobile { display: none; }
 
-    h2 { margin-top: 30px; }
+    h2 { margin-top: 30px; grid-area: title; }
 
     .loading {
+        grid-area: results;
         background:url("https://developers.redhat.com/images/icons/ajax-loader.gif") center 80px no-repeat;
         min-height:250px;
     }
 }
 
 rhdp-search-box {
+    grid-area: searchbox;
     margin: 0 0 1em 0;
 
     form.search-bar {
@@ -98,6 +111,7 @@ rhdp-search-box {
 }
 
 rhdp-search-result-count, rhdp-search-empty-query {
+    grid-area: resultcount;
     font-weight: 600;
     font-size: 1.2em;
     display: block;
@@ -114,6 +128,7 @@ rhdp-search-result-count, rhdp-search-empty-query {
 }
 
 rhdp-search-sort-page {
+    grid-area: sort;
     display: block;
     margin: 1em 0;
     border-bottom: 1px solid $grey-4;
@@ -211,9 +226,15 @@ rhdp-search-sort-page {
 
 rhdp-search-filters {
     display: block;
+    grid-area: filters;
 
     &[type="modal"] {
         display: none;
+        grid-area: auto;
+    }
+
+    &[type="active"] {
+        grid-area: activefilters;
     }
 
     .title {
@@ -323,6 +344,7 @@ rhdp-search-filters {
         }
 
         &[type="active"] {
+            grid-area: activefilters;
             width: 100%;
             .active-type {
                 display: block;
@@ -427,6 +449,7 @@ rhdp-search-filters {
 }
 
 rhdp-search-results {
+    grid-area: results;
     flex: 1 1 auto;
     display: flex;
     flex-direction: column;
@@ -697,6 +720,7 @@ rhdp-search-filter-item {
 }
 
 rhdp-search-onebox {
+    grid-area: onebox;
     div {
         display: block;
         border: 1px solid $grey-3;

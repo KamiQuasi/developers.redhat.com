@@ -1,16 +1,30 @@
-import RHElement from '../rhelement';
+import RHElement from '@rhelements/rhelement';
 
-export default class RHDPSearchFilterItem extends RHElement {
+export default class RHDPSearchFilterItemInline extends RHElement {
     template = el => {
         const tpl = document.createElement("template");
         let checked = el.active ? 'checked' : '';
-        tpl.innerHTML = `<div class="list"><span>${el.name}</span><input type="checkbox" ${checked} id="filter-item-${el.key}" value="${el.key}"><label for="filter-item-${el.key}">${el.name}</label></div>`;
-        return tpl;
-    }
-
-    inlineTemplate = el => {
-        const tpl = document.createElement("template");
-        tpl.innerHTML = el.active ? `<div class="inline">${el.name} <i class="fa fa-times clearItem" aria-hidden="true"></i></div>` : '';
+        tpl.innerHTML = el.active ? `
+        <style>
+        :host {
+            width: auto;
+            white-space: nowrap;
+            overflow-y: hidden;
+            font-size: 16px;
+            font-weight: 600;
+            flex: 1 1 auto;
+            padding: .5em .7em;
+            line-height: 1em;
+            border: 1px solid #8c8f91;
+            background-color: #8c8f91;
+            color: #fff;
+            margin-right: .5em;
+            margin-bottom: .5em;
+            display: inline-block;
+            cursor: default;
+        }
+        </style>
+        ${el.name} <i class="fa fa-times clearItem" aria-hidden="true">X</i>` : '';
         return tpl;
     }
 
@@ -18,7 +32,6 @@ export default class RHDPSearchFilterItem extends RHElement {
     _name;
     _active = false;
     _value;
-    _inline = false;
     _bubble = true;
     _bounce = false;
     _group;
@@ -48,19 +61,6 @@ export default class RHDPSearchFilterItem extends RHElement {
         if (this._group === val) return;
         this._group = val;
         this.setAttribute('group', this._group);
-    }
-
-    get inline() {
-        return this._inline;
-    }
-    set inline(val) {
-        if (this._inline === val) return;
-        this._inline = val;
-        if (!this._inline) {
-            super.render(this.template(this));
-        } else {
-            super.render(this.inlineTemplate(this));
-        }
     }
 
     get bubble() {
@@ -104,13 +104,13 @@ export default class RHDPSearchFilterItem extends RHElement {
             if (chkbox) {
                 chkbox.checked = this._active;
             }
-            if ( this.inline ) { 
-                if (this._active) {
-                    super.render(this.inlineTemplate(this));
-                } else {
-                    this.innerHTML = '';
-                }
+            
+            if (this._active) {
+                super.render(this.template(this));
+            } else {
+                this.innerHTML = '';
             }
+            
             let evt = {detail: {facet: this}, bubbles: this.bubble, composed: true };
             this.dispatchEvent(new CustomEvent('filter-item-change', evt));
             this.bubble = true;
@@ -126,7 +126,7 @@ export default class RHDPSearchFilterItem extends RHElement {
     }
 
     constructor() {
-        super('rhdp-search-filter-item');
+        super('rhdp-search-filter-item-inline');
 
         this._checkParams = this._checkParams.bind(this);
         this._clearFilters = this._clearFilters.bind(this);
@@ -137,13 +137,8 @@ export default class RHDPSearchFilterItem extends RHElement {
     
 
     connectedCallback() {
-        if (!this.inline) {
-            super.render(this.template(this));
-            this.shadowRoot.addEventListener('change', this._updateFacet);
-        } else {
-            super.render(this.inlineTemplate(this));
-            this.shadowRoot.addEventListener('click', this._updateFacet);
-        }
+        super.render(this.template(this));
+        this.shadowRoot.addEventListener('click', this._updateFacet);
         
         top.addEventListener('filter-item-change', this._checkChange);
         top.addEventListener('params-ready', this._checkParams);
@@ -152,7 +147,7 @@ export default class RHDPSearchFilterItem extends RHElement {
     }
 
     static get observedAttributes() { 
-        return ['name', 'active', 'value', 'inline', 'key', 'group']; 
+        return ['name', 'active', 'value', 'key', 'group']; 
     }
 
     attributeChangedCallback(name, oldVal, newVal) {
@@ -161,12 +156,8 @@ export default class RHDPSearchFilterItem extends RHElement {
 
     _updateFacet(e) {
         this.bounce = true;
-        if (this.inline) {
-            if (e.target['className'].indexOf('clearItem') >= 0) {
-                this.active = !this.active; 
-            }
-        } else {
-            this.active = !this.active;
+        if (e.target['className'].indexOf('clearItem') >= 0) {
+            this.active = !this.active; 
         }
     }
 
@@ -214,4 +205,4 @@ export default class RHDPSearchFilterItem extends RHElement {
     }
 }
 
-customElements.define('rhdp-search-filter-item', RHDPSearchFilterItem);
+customElements.define('rhdp-search-filter-item-inline', RHDPSearchFilterItemInline);
