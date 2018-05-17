@@ -43,11 +43,22 @@ export default class RHDPSearchActiveFilters extends RHElement {
 
             @media only screen and (max-width: 768px) {
                 :host {
-                    flex: none; 
-                    justify-self: center; 
-                    float: left;
-                    border: none;
-                    margin: 0; 
+                    margin-bottom: 15px; 
+                    list-style: none;
+                    width: auto;
+                    white-space: nowrap;
+                    overflow-y: hidden;
+                }
+
+                strong { display: none; }
+
+                a {
+                    display: inline;
+                    clear: left;
+                    font-size: 16px;
+                    position: relative;
+                    top: 5px;
+                    vertical-align: top;
                 }
             }
 
