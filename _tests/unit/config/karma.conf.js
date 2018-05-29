@@ -2,7 +2,7 @@
 // Karma configuration for running unit-tests in Docker
 module.exports = function (config) {
     config.set({
-        browsers: ['ChromeHeadless'],
+        browsers: ['Chrome'],
         plugins: [
             'karma-chrome-launcher',
             'karma-jasmine',
@@ -10,7 +10,7 @@ module.exports = function (config) {
             'karma-htmlfile-reporter'
         ],
         //logLevel: config.LOG_DEBUG,
-        singleRun: true,
+        singleRun: false,
         colors: true,
         frameworks: ['jasmine-ajax', 'jasmine'],
         reporters: ['progress', 'html'],
@@ -22,9 +22,15 @@ module.exports = function (config) {
 
         files: [
             'jasmine-global.js',
-            'https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/1.0.14/custom-elements-es5-adapter.js',
-            'https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/1.0.14/webcomponents-lite.js',
-            '../../../javascripts/build.js',
+            'https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/1.2.0/custom-elements-es5-adapter.js',
+            'https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/1.2.0/webcomponents-lite.js',
+            'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js',
+            '../../../_docker/drupal/drupal-filesystem/web/core/misc/drupal.js',
+            '../../../_docker/drupal/drupal-filesystem/web/core/misc/drupal-init.js',
+            '../../../_docker/drupal/drupal-filesystem/web/core/misc/drupalSettingsLoader.js',
+            'https://cdnjs.cloudflare.com/ajax/libs/systemjs/0.21.3/system-production.js',
+            '../../../_docker/drupal/drupal-filesystem/web/themes/custom/rhdp/rhd-frontend/rhd.js',
+            '../../../_docker/drupal/drupal-filesystem/web/themes/custom/rhdp/js/init.js',
             '../**/*_spec.js'          
         ]
     })
