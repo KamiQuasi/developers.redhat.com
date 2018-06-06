@@ -2,9 +2,13 @@ import RHElement from '@rhelements/rhelement';
 import DPCategoryItemList from './dp-category-item-list';
 
 export default class DPCategoryList extends RHElement {
-    template = el => {
-        const tpl = document.createElement("template");
-        tpl.innerHTML = `
+    _template = document.createElement("template");
+    
+    get template() {
+        return this._template;
+    }
+    set template(data: any) {
+       this._template.innerHTML = `
 <style>
     :host {
         position: relative;
@@ -57,7 +61,6 @@ export default class DPCategoryList extends RHElement {
 <slot></slot>
 </section>
 `;
-        return tpl;
     }
 
     items = [];
@@ -68,7 +71,8 @@ export default class DPCategoryList extends RHElement {
     }
 
     connectedCallback() {
-        super.render(this.template(this));
+        this.template = '';
+        super.render();
 
         // let li = this.querySelectorAll('dp-category-item-list');
         // for( let ele in li ) {

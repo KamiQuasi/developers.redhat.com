@@ -1,9 +1,13 @@
 import RHElement from '@rhelements/rhelement';
 
 export default class DPCategory extends RHElement {
-    template = (el:DPCategory) => {
-        const tpl = document.createElement("template");
-        tpl.innerHTML = `
+    _template = document.createElement("template");
+    
+    get template() {
+        return this._template;
+    }
+    set template(data: any) {
+       this._template.innerHTML = `
 <style>
 :host { 
     grid-column: span 1;
@@ -90,11 +94,10 @@ h4 {
     }
 }
 </style>
-${el.image && el.image.indexOf('svg') < 0 ? `<img src="${el.image}">` : el.image }
-<h4>${ el.name }</h4>
+${data.image && data.image.indexOf('svg') < 0 ? `<img src="${data.image}">` : data.image }
+<h4>${ data.name }</h4>
 <slot></slot>
 `;
-        return tpl;
     }
 
     _name:string;
@@ -164,7 +167,8 @@ ${el.image && el.image.indexOf('svg') < 0 ? `<img src="${el.image}">` : el.image
     }
 
     connectedCallback() {
-        super.render(this.template(this));
+        this.template = this;
+        super.render();
 
         this.addEventListener('click', e => {
             e.preventDefault();
@@ -200,7 +204,8 @@ ${el.image && el.image.indexOf('svg') < 0 ? `<img src="${el.image}">` : el.image
         const resp = await fetch(path);
         const svg = await resp.text();
         this.image = svg.substring(svg.indexOf('<svg'));
-        super.render(this.template(this));
+        this.template = this;
+        super.render();
     }
 }
 

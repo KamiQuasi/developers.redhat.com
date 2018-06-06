@@ -1,23 +1,26 @@
 import RHElement from '@rhelements/rhelement';
 
 export default class DPCategoryItem extends RHElement {
-    template = el => {
-        const tpl = document.createElement("template");
-        tpl.innerHTML = `
-            <style>
-            
-            </style>
-            <slot></slot>
-            `;
-        return tpl;
+    _template = document.createElement("template");
+    
+    get template() {
+        return this._template;
     }
+    set template(data: any) {
+       this._template.innerHTML = `
+       <style></style>
+       <slot></slot>
+       `;
+    }
+
     constructor() {
         super('dp-category-item');
         
     }
 
     connectedCallback() {
-        super.render(this.template(this));
+        this.template = '';
+        super.render();
     }
 
     static get observedAttributes() { 

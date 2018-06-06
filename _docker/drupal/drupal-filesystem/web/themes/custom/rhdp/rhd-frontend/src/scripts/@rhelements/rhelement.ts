@@ -2,19 +2,21 @@ declare const ShadyCSS:any;
 
 export default class RHElement extends HTMLElement {
     id:string;
+    _template:HTMLTemplateElement;
 
     constructor(id, template?) {
         super();
         this.id = id;
+        this._template = template || null;
 
-        if (ShadyCSS && template) {
-            ShadyCSS.prepareTemplate(template, id);
+        if (ShadyCSS && this._template) {
+            ShadyCSS.prepareTemplate(this._template, id);
         }
 
         this.attachShadow({ mode: "open" });
 
-        if (template) {
-            this.shadowRoot.appendChild(template.content.cloneNode(true));
+        if (this._template) {
+            this.shadowRoot.appendChild(this._template.content.cloneNode(true));
         }
     }
 
@@ -32,19 +34,21 @@ export default class RHElement extends HTMLElement {
         this[name] = newVal;
     }
 
-    render(template) {
-        if (ShadyCSS) {
-            ShadyCSS.prepareTemplate(template, this.id);
-        }
-    
-        while (this.shadowRoot.firstChild) {
-            this.shadowRoot.removeChild(this.shadowRoot.firstChild);
-        }
-    
-        this.shadowRoot.appendChild(template.content.cloneNode(true));
-    
-        if (ShadyCSS) {
-            ShadyCSS.styleElement(this);
+    render() {
+        if (this._template) {
+            if (ShadyCSS) {
+                ShadyCSS.prepareTemplate(this._template, this.id);
+            }
+        
+            while (this.shadowRoot.firstChild) {
+                this.shadowRoot.removeChild(this.shadowRoot.firstChild);
+            }
+        
+            this.shadowRoot.appendChild(this._template.content.cloneNode(true));
+        
+            if (ShadyCSS) {
+                ShadyCSS.styleElement(this);
+            }
         }
     }
 }

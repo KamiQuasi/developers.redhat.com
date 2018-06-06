@@ -59,12 +59,13 @@ System.register("@rhelements/rhelement", [], function (exports_1, context_1) {
                 function RHElement(id, template) {
                     var _this = _super.call(this) || this;
                     _this.id = id;
-                    if (ShadyCSS && template) {
-                        ShadyCSS.prepareTemplate(template, id);
+                    _this._template = template;
+                    if (ShadyCSS && _this._template) {
+                        ShadyCSS.prepareTemplate(_this._template, id);
                     }
                     _this.attachShadow({ mode: "open" });
-                    if (template) {
-                        _this.shadowRoot.appendChild(template.content.cloneNode(true));
+                    if (_this._template) {
+                        _this.shadowRoot.appendChild(_this._template.content.cloneNode(true));
                     }
                     return _this;
                 }
@@ -83,16 +84,18 @@ System.register("@rhelements/rhelement", [], function (exports_1, context_1) {
                 RHElement.prototype.attributeChangedCallback = function (name, oldVal, newVal) {
                     this[name] = newVal;
                 };
-                RHElement.prototype.render = function (template) {
-                    if (ShadyCSS) {
-                        ShadyCSS.prepareTemplate(template, this.id);
-                    }
-                    while (this.shadowRoot.firstChild) {
-                        this.shadowRoot.removeChild(this.shadowRoot.firstChild);
-                    }
-                    this.shadowRoot.appendChild(template.content.cloneNode(true));
-                    if (ShadyCSS) {
-                        ShadyCSS.styleElement(this);
+                RHElement.prototype.render = function () {
+                    if (this._template) {
+                        if (ShadyCSS) {
+                            ShadyCSS.prepareTemplate(this._template, this.id);
+                        }
+                        while (this.shadowRoot.firstChild) {
+                            this.shadowRoot.removeChild(this.shadowRoot.firstChild);
+                        }
+                        this.shadowRoot.appendChild(this._template.content.cloneNode(true));
+                        if (ShadyCSS) {
+                            ShadyCSS.styleElement(this);
+                        }
                     }
                 };
                 return RHElement;
@@ -116,11 +119,7 @@ System.register("@rhd/rhdp-alert", ["@rhelements/rhelement"], function (exports_
                 __extends(RHDPAlert, _super);
                 function RHDPAlert() {
                     var _this = _super.call(this, 'rhdp-alert') || this;
-                    _this.template = function (el) {
-                        var tpl = document.createElement("template");
-                        tpl.innerHTML = "\n        <style>\n        :host {\n            color: #363636 !important;\n            display: flex;\n            flex-direction: " + (el.size !== 'xl' ? 'row' : 'column') + ";\n            border-width: 1px;\n            border-style: solid;\n            padding: 10px 20px;\n            margin: 1.5em auto;\n            font-size: 1em;\n            background-color: " + el.background + ";\n            border-color: " + el.border + ";\n            line-height: 24px;\n            vertical-align: middle;\n        }\n\n        h3, strong {\n            margin-bottom: 0;\n            display: inline\n        }\n\n        strong { margin-right: .5em; }\n          \n        img {\n            flex: 0 0 1.5em;\n            height: 1.5em;\n            display: block;\n            position: relative;\n            margin-right: 10px;\n            " + (el.size !== 'xl' ? '' : "\n            display: inline;\n            float: left;\n            margin-left: 1em;\n            ") + "\n        }\n        \n        a.close {\n            top: 1em;\n            margin-right: 5px;\n            background-repeat: no-repeat;\n            height: 24px;\n            width: 24px;\n            color: #3b6e90;\n        }\n        \n        </style>\n        <img src=\"" + el.icon + "\">\n        " + (el.size === 'xl' ? '<h3>' : '') + "\n        " + (el.heading ? "<strong>" + el.heading + "</strong>" : '') + "\n        " + (el.size === 'xl' ? '</h3>' : '') + "\n        <slot></slot>\n        " + (el.size === 'xl' ? "<a class=\"close\"><i class=\"fas fa-times\"</a>" : '');
-                        return tpl;
-                    };
+                    _this._template = document.createElement("template");
                     _this._type = 'info';
                     _this._icon = 'https://static.jboss.org/rhd/images/icons/RHD_alerticon_info.svg';
                     _this._background = '#dcedf8';
@@ -128,6 +127,16 @@ System.register("@rhd/rhdp-alert", ["@rhelements/rhelement"], function (exports_
                     _this.text = _this.innerHTML;
                     return _this;
                 }
+                Object.defineProperty(RHDPAlert.prototype, "template", {
+                    get: function () {
+                        return this._template;
+                    },
+                    set: function (data) {
+                        this._template.innerHTML = "\n        <style>\n        :host {\n            color: #363636 !important;\n            display: flex;\n            flex-direction: " + (data.size !== 'xl' ? 'row' : 'column') + ";\n            border-width: 1px;\n            border-style: solid;\n            padding: 10px 20px;\n            margin: 1.5em auto;\n            font-size: 1em;\n            background-color: " + data.background + ";\n            border-color: " + data.border + ";\n            line-height: 24px;\n            vertical-align: middle;\n        }\n\n        h3, strong {\n            margin-bottom: 0;\n            display: inline\n        }\n\n        strong { margin-right: .5em; }\n          \n        img {\n            flex: 0 0 1.5em;\n            height: 1.5em;\n            display: block;\n            position: relative;\n            margin-right: 10px;\n            " + (data.size !== 'xl' ? '' : "\n            display: inline;\n            float: left;\n            margin-left: 1em;\n            ") + "\n        }\n        \n        a.close {\n            top: 1em;\n            margin-right: 5px;\n            background-repeat: no-repeat;\n            height: 24px;\n            width: 24px;\n            color: #3b6e90;\n        }\n        \n        </style>\n        <img src=\"" + data.icon + "\">\n        " + (data.size === 'xl' ? '<h3>' : '') + "\n        " + (data.heading ? "<strong>" + data.heading + "</strong>" : '') + "\n        " + (data.size === 'xl' ? '</h3>' : '') + "\n        <slot></slot>\n        " + (data.size === 'xl' ? "<a class=\"close\"><i class=\"fas fa-times\"</a>" : '');
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
                 Object.defineProperty(RHDPAlert.prototype, "type", {
                     get: function () {
                         return this._type;
@@ -237,7 +246,8 @@ System.register("@rhd/rhdp-alert", ["@rhelements/rhelement"], function (exports_
                 });
                 RHDPAlert.prototype.connectedCallback = function () {
                     var _this = this;
-                    _super.prototype.render.call(this, this.template(this));
+                    this.template = this;
+                    _super.prototype.render.call(this);
                     this.addEventListener('click', function (e) {
                         if (e.target && e.target['className'] === 'close') {
                             _this.innerHTML = '';
@@ -253,7 +263,8 @@ System.register("@rhd/rhdp-alert", ["@rhelements/rhelement"], function (exports_
                 });
                 RHDPAlert.prototype.attributeChangedCallback = function (name, oldVal, newVal) {
                     this[name] = newVal;
-                    _super.prototype.render.call(this, this.template(this));
+                    this.template = this;
+                    _super.prototype.render.call(this);
                     ;
                 };
                 return RHDPAlert;
@@ -278,15 +289,21 @@ System.register("@rhd/dp-category-list/dp-category-item-list", ["@rhelements/rhe
                 __extends(DPCategoryItemList, _super);
                 function DPCategoryItemList() {
                     var _this = _super.call(this, 'dp-category-item-list') || this;
-                    _this.template = function (el) {
-                        var tpl = document.createElement("template");
-                        tpl.innerHTML = "\n            <style>\n            :host[visible] {\n                display: block;\n            }\n\n            :host {\n                display: none;\n                flex: 1 1 100%;\n                grid-column: span 1;\n            }\n\n            div {\n                background: white;\n                display: grid;\n                grid-template-columns: 1fr;\n                grid-gap: 15px;\n                position: relative;\n                padding-top: 15px;\n                padding-right: 15px;\n                padding-left: 15px;\n            }\n\n            @media (min-width: 500px) {\n                :host {\n                    grid-column: span 2;\n                    margin-bottom: 30px;\n                }\n\n                div {\n                    border: 1px solid #CCCCCC;\n                }\n            }\n\n            @media (min-width: 800px) {\n                :host {\n                    grid-column: span 3;\n                }\n\n                div {\n                    grid-template-columns: repeat(2, 1fr);\n                }\n            }\n\n            @media (min-width: 1200px) {\n                :host {\n                    grid-column: span 4;\n                }\n\n                div {\n                    grid-template-columns: repeat(3, 1fr);\n                    grid-gap: 30px;\n                    background-color: #FFFFFF;\n                    padding: 30px;\n                    margin-bottom: 30px;\n                }\n            }\n            </style>\n            <div>\n            <slot></slot>\n            </div>\n            ";
-                        return tpl;
-                    };
+                    _this._template = document.createElement("template");
                     _this._index = 1;
                     _this._visible = false;
                     return _this;
                 }
+                Object.defineProperty(DPCategoryItemList.prototype, "template", {
+                    get: function () {
+                        return this._template;
+                    },
+                    set: function (data) {
+                        this._template.innerHTML = "\n            <style>\n            :host[visible] {\n                display: block;\n            }\n\n            :host {\n                display: none;\n                flex: 1 1 100%;\n                grid-column: span 1;\n            }\n\n            div {\n                background: white;\n                display: grid;\n                grid-template-columns: 1fr;\n                grid-gap: 15px;\n                position: relative;\n                padding-top: 15px;\n                padding-right: 15px;\n                padding-left: 15px;\n            }\n\n            @media (min-width: 500px) {\n                :host {\n                    grid-column: span 2;\n                    margin-bottom: 30px;\n                }\n\n                div {\n                    border: 1px solid #CCCCCC;\n                }\n            }\n\n            @media (min-width: 800px) {\n                :host {\n                    grid-column: span 3;\n                }\n\n                div {\n                    grid-template-columns: repeat(2, 1fr);\n                }\n            }\n\n            @media (min-width: 1200px) {\n                :host {\n                    grid-column: span 4;\n                }\n\n                div {\n                    grid-template-columns: repeat(3, 1fr);\n                    grid-gap: 30px;\n                    background-color: #FFFFFF;\n                    padding: 30px;\n                    margin-bottom: 30px;\n                }\n            }\n            </style>\n            <div>\n            <slot></slot>\n            </div>\n            ";
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
                 Object.defineProperty(DPCategoryItemList.prototype, "index", {
                     get: function () {
                         return this._index;
@@ -295,7 +312,8 @@ System.register("@rhd/dp-category-list/dp-category-item-list", ["@rhelements/rhe
                         if (this._index === val)
                             return;
                         this._index = val;
-                        _super.prototype.render.call(this, this.template(this));
+                        this.template = this;
+                        _super.prototype.render.call(this);
                     },
                     enumerable: true,
                     configurable: true
@@ -322,7 +340,8 @@ System.register("@rhd/dp-category-list/dp-category-item-list", ["@rhelements/rhe
                     configurable: true
                 });
                 DPCategoryItemList.prototype.connectedCallback = function () {
-                    _super.prototype.render.call(this, this.template(this));
+                    this.template = this;
+                    _super.prototype.render.call(this);
                 };
                 Object.defineProperty(DPCategoryItemList, "observedAttributes", {
                     get: function () {
@@ -356,18 +375,25 @@ System.register("@rhd/dp-category-list/dp-category-list", ["@rhelements/rhelemen
                 __extends(DPCategoryList, _super);
                 function DPCategoryList() {
                     var _this = _super.call(this, 'dp-category-list') || this;
-                    _this.template = function (el) {
-                        var tpl = document.createElement("template");
-                        tpl.innerHTML = "\n<style>\n    :host {\n        position: relative;\n        background-color: #F9F9F9;\n        padding: 30px 0;\n        display: block;\n    }\n\n    section {\n        display: grid;\n        grid-template-columns: 1fr;\n        grid-template-rows: auto;\n        grid-auto-flow: row;\n        grid-gap: 0;\n        margin: 0;\n        max-width: 500px;\n    }\n\n    @media (min-width: 500px) {\n        section {\n            grid-template-columns: repeat(2, 1fr);\n            grid-column-gap: 15px;\n            margin: 0 15px;\n            max-width: 800px;\n            justify-items: center;\n        }\n    }\n\n    @media (min-width: 800px) {\n        section {\n            grid-template-columns: repeat(3, 1fr);\n            grid-column-gap: 30px;\n            margin: 0 30px;\n            max-width: 1200px;\n            justify-items: center;\n        }\n    }\n\n    @media (min-width: 1200px) {\n        section {\n            grid-template-columns: repeat(4, 1fr);\n            grid-column-gap: 30px;\n            margin: 0 auto;\n            max-width: 1260px;\n            justify-items: center;\n        }\n    }\n</style>\n<section >\n<slot></slot>\n</section>\n";
-                        return tpl;
-                    };
+                    _this._template = document.createElement("template");
                     _this.items = [];
                     _this.active = 0;
                     return _this;
                 }
+                Object.defineProperty(DPCategoryList.prototype, "template", {
+                    get: function () {
+                        return this._template;
+                    },
+                    set: function (data) {
+                        this._template.innerHTML = "\n<style>\n    :host {\n        position: relative;\n        background-color: #F9F9F9;\n        padding: 30px 0;\n        display: block;\n    }\n\n    section {\n        display: grid;\n        grid-template-columns: 1fr;\n        grid-template-rows: auto;\n        grid-auto-flow: row;\n        grid-gap: 0;\n        margin: 0;\n        max-width: 500px;\n    }\n\n    @media (min-width: 500px) {\n        section {\n            grid-template-columns: repeat(2, 1fr);\n            grid-column-gap: 15px;\n            margin: 0 15px;\n            max-width: 800px;\n            justify-items: center;\n        }\n    }\n\n    @media (min-width: 800px) {\n        section {\n            grid-template-columns: repeat(3, 1fr);\n            grid-column-gap: 30px;\n            margin: 0 30px;\n            max-width: 1200px;\n            justify-items: center;\n        }\n    }\n\n    @media (min-width: 1200px) {\n        section {\n            grid-template-columns: repeat(4, 1fr);\n            grid-column-gap: 30px;\n            margin: 0 auto;\n            max-width: 1260px;\n            justify-items: center;\n        }\n    }\n</style>\n<section >\n<slot></slot>\n</section>\n";
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
                 DPCategoryList.prototype.connectedCallback = function () {
                     var _this = this;
-                    _super.prototype.render.call(this, this.template(this));
+                    this.template = '';
+                    _super.prototype.render.call(this);
                     this.addEventListener('dp-category-selected', function (e) {
                         var w = window.innerWidth;
                         var cols = 4;
@@ -453,16 +479,22 @@ System.register("@rhd/dp-category-list/dp-category", ["@rhelements/rhelement"], 
                 __extends(DPCategory, _super);
                 function DPCategory() {
                     var _this = _super.call(this, 'dp-category-list') || this;
-                    _this.template = function (el) {
-                        var tpl = document.createElement("template");
-                        tpl.innerHTML = "\n<style>\n:host { \n    grid-column: span 1;\n    border-top: 1px solid var(--rhd-blue);\n    display: flex;\n    flex-direction: row;\n    flex-wrap: wrap;\n    padding: 15px;\n    align-items: center;\n    background-color: var(--rhd-white, #ffffff);\n    position: relative;\n    z-index: 1;\n}\n\nimg, svg { \n    flex: 0 0 60px; \n    padding-right: 24px; \n    height: 60px;   \n}\n\nh4 {\n    flex: 1 0 auto;\n    color: #0066CC;\n    font-family: Overpass;\n    font-size: 14px;\n    font-weight: normal;\n    line-height: 21px;\n    margin: 0 0 5px 0;\n}\n\n:host(:hover), :host([visible]) {\n    cursor: pointer;\n    color: var(--rhd-blue);\n    fill: var(--rhd-blue);\n    border-top: 5px solid var(--rhd-blue);\n    border-bottom: 5px solid var(--rhd-blue);\n}\n\n@media (min-width: 500px) {\n    :host, :host(:hover), :host([visible]) {\n        flex-direction: column;\n        text-align: center; \n        border-top: none;\n        border-bottom: none;\n        background-color: transparent;\n        margin-bottom:30px;\n    }\n\n    :host([visible]):after, :host([visible]):before {\n        top: 100%;\n        left: 50%;\n        border: solid transparent;\n        content: \" \";\n        height: 0;\n        width: 0;\n        position: absolute;\n        pointer-events: none;\n    }\n    \n    :host([visible]):before {\n        border-bottom-color: #CCCCCC;\n        border-width: 15px;\n        margin-left: -15px;\n    }\n    :host([visible]):after {\n        border-bottom-color: #FFFFFF;\n        border-width: 16px;\n        margin-left: -16px;\n    }\n    \n\n    img, svg { flex: 0 0 150px; height: 150px; padding-right: 0; padding-bottom: 15px; }\n}\n\n@media (min-width: 800px) {\n    :host {\n        \n    }\n}\n\n@media (min-width: 1200px) {\n    :host {\n        \n    }\n}\n</style>\n" + (el.image && el.image.indexOf('svg') < 0 ? "<img src=\"" + el.image + "\">" : el.image) + "\n<h4>" + el.name + "</h4>\n<slot></slot>\n";
-                        return tpl;
-                    };
+                    _this._template = document.createElement("template");
                     _this._visible = false;
                     _this._index = -1;
                     _this._showList = _this._showList.bind(_this);
                     return _this;
                 }
+                Object.defineProperty(DPCategory.prototype, "template", {
+                    get: function () {
+                        return this._template;
+                    },
+                    set: function (data) {
+                        this._template.innerHTML = "\n<style>\n:host { \n    grid-column: span 1;\n    border-top: 1px solid var(--rhd-blue);\n    display: flex;\n    flex-direction: row;\n    flex-wrap: wrap;\n    padding: 15px;\n    align-items: center;\n    background-color: var(--rhd-white, #ffffff);\n    position: relative;\n    z-index: 1;\n}\n\nimg, svg { \n    flex: 0 0 60px; \n    padding-right: 24px; \n    height: 60px;   \n}\n\nh4 {\n    flex: 1 0 auto;\n    color: #0066CC;\n    font-family: Overpass;\n    font-size: 14px;\n    font-weight: normal;\n    line-height: 21px;\n    margin: 0 0 5px 0;\n}\n\n:host(:hover), :host([visible]) {\n    cursor: pointer;\n    color: var(--rhd-blue);\n    fill: var(--rhd-blue);\n    border-top: 5px solid var(--rhd-blue);\n    border-bottom: 5px solid var(--rhd-blue);\n}\n\n@media (min-width: 500px) {\n    :host, :host(:hover), :host([visible]) {\n        flex-direction: column;\n        text-align: center; \n        border-top: none;\n        border-bottom: none;\n        background-color: transparent;\n        margin-bottom:30px;\n    }\n\n    :host([visible]):after, :host([visible]):before {\n        top: 100%;\n        left: 50%;\n        border: solid transparent;\n        content: \" \";\n        height: 0;\n        width: 0;\n        position: absolute;\n        pointer-events: none;\n    }\n    \n    :host([visible]):before {\n        border-bottom-color: #CCCCCC;\n        border-width: 15px;\n        margin-left: -15px;\n    }\n    :host([visible]):after {\n        border-bottom-color: #FFFFFF;\n        border-width: 16px;\n        margin-left: -16px;\n    }\n    \n\n    img, svg { flex: 0 0 150px; height: 150px; padding-right: 0; padding-bottom: 15px; }\n}\n\n@media (min-width: 800px) {\n    :host {\n        \n    }\n}\n\n@media (min-width: 1200px) {\n    :host {\n        \n    }\n}\n</style>\n" + (data.image && data.image.indexOf('svg') < 0 ? "<img src=\"" + data.image + "\">" : data.image) + "\n<h4>" + data.name + "</h4>\n<slot></slot>\n";
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
                 Object.defineProperty(DPCategory.prototype, "name", {
                     get: function () { return this._name; },
                     set: function (val) {
@@ -527,7 +559,8 @@ System.register("@rhd/dp-category-list/dp-category", ["@rhelements/rhelement"], 
                 });
                 DPCategory.prototype.connectedCallback = function () {
                     var _this = this;
-                    _super.prototype.render.call(this, this.template(this));
+                    this.template = this;
+                    _super.prototype.render.call(this);
                     this.addEventListener('click', function (e) {
                         e.preventDefault();
                         _this.visible = !_this.visible;
@@ -573,7 +606,8 @@ System.register("@rhd/dp-category-list/dp-category", ["@rhelements/rhelement"], 
                                 case 2:
                                     svg = _a.sent();
                                     this.image = svg.substring(svg.indexOf('<svg'));
-                                    _super.prototype.render.call(this, this.template(this));
+                                    this.template = this;
+                                    _super.prototype.render.call(this);
                                     return [2];
                             }
                         });
@@ -601,15 +635,22 @@ System.register("@rhd/dp-category-list/dp-category-item", ["@rhelements/rhelemen
                 __extends(DPCategoryItem, _super);
                 function DPCategoryItem() {
                     var _this = _super.call(this, 'dp-category-item') || this;
-                    _this.template = function (el) {
-                        var tpl = document.createElement("template");
-                        tpl.innerHTML = "\n            <style>\n            \n            </style>\n            <slot></slot>\n            ";
-                        return tpl;
-                    };
+                    _this._template = document.createElement("template");
                     return _this;
                 }
+                Object.defineProperty(DPCategoryItem.prototype, "template", {
+                    get: function () {
+                        return this._template;
+                    },
+                    set: function (data) {
+                        this._template.innerHTML = "\n       <style></style>\n       <slot></slot>\n       ";
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
                 DPCategoryItem.prototype.connectedCallback = function () {
-                    _super.prototype.render.call(this, this.template(this));
+                    this.template = '';
+                    _super.prototype.render.call(this);
                 };
                 Object.defineProperty(DPCategoryItem, "observedAttributes", {
                     get: function () {
@@ -643,13 +684,19 @@ System.register("@rhd/dp-category-list/dp-product-short-teaser", ["@rhelements/r
                 __extends(DPProductShortTeaser, _super);
                 function DPProductShortTeaser() {
                     var _this = _super.call(this, 'dp-product-short-teaser') || this;
-                    _this.template = function (el) {
-                        var tpl = document.createElement("template");
-                        tpl.innerHTML = "\n<style>\n    :host { \n        font-family: Overpass;\n        font-size: 14px;\n        line-height: 21px;\n        margin-bottom: 30px;\n        display: flex;\n        flex-direction: column;\n        text-align: left;\n    }\n    h4 { \n        flex: 0 0 24px;\n        font-family: Overpass;\n        font-size: 14px;\n        font-weight: bold;\n        line-height: 24px;\n        margin: 0 0 5px 0;\n    }\n    h4 a {\n        color: #0066CC;\n        text-decoration: none;\n    }\n\n    div {\n        flex: 1 1 auto;\n        margin-bottom: 16px;\n        color: #000000;\n    }\n\n    a.more {\n        flex: 0 0 25px;\n        display: block;\n        width: auto;\n        color: #0066CC;\n        font-size: 16px;\n        line-height: 25px;\n    }\n</style>\n<h4><a href=\"" + el.link + "\">" + el.name + "</a></h4>\n<div>\n<slot></slot>\n</div>\n<a class=\"more\" href=\"" + el.downloadLink + "\">View all downloads <i class=\"fas fa-caret-right\"></i></a>\n        ";
-                        return tpl;
-                    };
+                    _this._template = document.createElement("template");
                     return _this;
                 }
+                Object.defineProperty(DPProductShortTeaser.prototype, "template", {
+                    get: function () {
+                        return this._template;
+                    },
+                    set: function (data) {
+                        this._template.innerHTML = "\n<style>\n    :host { \n        font-family: Overpass;\n        font-size: 14px;\n        line-height: 21px;\n        margin-bottom: 30px;\n        display: flex;\n        flex-direction: column;\n        text-align: left;\n    }\n    h4 { \n        flex: 0 0 24px;\n        font-family: Overpass;\n        font-size: 14px;\n        font-weight: bold;\n        line-height: 24px;\n        margin: 0 0 5px 0;\n    }\n    h4 a {\n        color: #0066CC;\n        text-decoration: none;\n    }\n\n    div {\n        flex: 1 1 auto;\n        margin-bottom: 16px;\n        color: #000000;\n    }\n\n    a.more {\n        flex: 0 0 25px;\n        display: block;\n        width: auto;\n        color: #0066CC;\n        font-size: 16px;\n        line-height: 25px;\n    }\n</style>\n<h4><a href=\"" + data.link + "\">" + data.name + "</a></h4>\n<div>\n<slot></slot>\n</div>\n<a class=\"more\" href=\"" + data.downloadLink + "\">View all downloads <i class=\"fas fa-caret-right\"></i></a>\n        ";
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
                 Object.defineProperty(DPProductShortTeaser.prototype, "name", {
                     get: function () {
                         return this._name;
@@ -687,7 +734,8 @@ System.register("@rhd/dp-category-list/dp-product-short-teaser", ["@rhelements/r
                     configurable: true
                 });
                 DPProductShortTeaser.prototype.connectedCallback = function () {
-                    _super.prototype.render.call(this, this.template(this));
+                    this.template = this;
+                    _super.prototype.render.call(this);
                 };
                 Object.defineProperty(DPProductShortTeaser, "observedAttributes", {
                     get: function () {
@@ -1596,15 +1644,22 @@ System.register("@rhd/dp-stackoverflow/dp-stackoverflow", ["@rhelements/rhelemen
                 __extends(DPStackOverflow, _super);
                 function DPStackOverflow() {
                     var _this = _super.call(this, 'dp-category-list') || this;
-                    _this.template = function (el) {
-                        var tpl = document.createElement("template");
-                        tpl.innerHTML = "\n        <style>\n\n        </style>\n        <label for=\"filterByProduct\">Filter by Product</label>\n        <select id=\"filterByProduct\" name=\"filter-by-product\" ng-change=\"updateSearch(); resetPagination();\" ng-model=\"params.product\">\n<div ng-app=\"search\">\n<div class=\"row\" ng-controller=\"SearchController\">\n    <div class=\"large-24 columns\">\n    <div class=\"row\">\n        <div class=\"large-24 columns\">\n        <form class=\"search-bar\" ng-submit=\"updateSearch(); resetPagination();\" role=\"search\"> </form>\n        </div>\n        <div class=\"large-24 columns\" id=\"scrollPoint\">\n        <div class=\"row\">\n            <div class=\"large-14 columns stackoverflow-filters\">\n            <label for=\"filterByProduct\">Filter by Product</label>\n\n            <div class=\"styled-select\">\n<select id=\"filterByProduct\" name=\"filter-by-product\" ng-change=\"updateSearch(); resetPagination();\" ng-model=\"params.product\">\n    <option value=\"\">Show all</option>\n    <option value=\"openjdk\">OpenJDK</option>\n    <option value=\"rhamt\">Red Hat Application Migration Toolkit</option>\n    <option value=\"cdk\">Red Hat Developer Container Kit</option>\n    <option value=\"developertoolset\">Red Hat Developer Toolset</option>\n    <option value=\"rhel\">Red Hat Enterprise Linux</option>\n    <option value=\"amq\">Red Hat JBoss AMQ</option>\n    <option value=\"bpmsuite\">Red Hat JBoss BPM Suite</option>\n    <option value=\"brms\">Red Hat Decision Manager</option>\n    <option value=\"datagrid\">Red Hat JBoss Data Grid</option>\n    <option value=\"datavirt\">Red Hat JBoss Data Virtualization</option>\n    <option value=\"devstudio\">Red Hat JBoss Developer Studio</option>\n    <option value=\"eap\">Red Hat JBoss Enterprise Application Platform</option>\n    <option value=\"fuse\">Red Hat JBoss Fuse</option>\n    <option value=\"webserver\">Red Hat JBoss Web Server</option>\n    <option value=\"rhmap\">Red Hat Mobile Application Platform</option>\n    <option value=\"rhoar\">Red Hat Openshift Application Runtimes</option>\n    <option value=\"openshift\">Red Hat OpenShift Container Platform</option>\n    <option value=\"softwarecollections\">Red Hat Software Collections</option>\n    <option value=\"dotnet\">.NET Core for Red Hat Enterprise Linux</option>\n</select>\n</div>\n            </div>\n\n            <div class=\"large-10 columns\">\n            <div class=\"sorting so-sorting\">\n                <p ng-if=\"totalCount &gt; 10\">Show<select class=\"results-count\" ng-change=\"updateSearch()\" ng-model=\"params.size\"><option value=\"10\">10</option>\n<option value=\"25\">25</option>\n<option value=\"50\">50</option>\n<option value=\"100\">100</option></select>results per page</p>\n            </div>\n            </div>\n        </div>\n\n        <div class=\"row\">\n            <div class=\"large-24 columns\">\n            <h3 class=\"results-title\" ng-bind-template=\"No results found\" ng-if=\"totalCount &lt;= 0\"> </h3>\n\n            <h4 class=\"results-sub-title\" ng-bind-template=\"Please select a different product\" ng-if=\"totalCount &lt;= 0\"> </h4>\n\n            <div class=\"stackoverflow-results-container\" ng-class=\"loading ? 'invisible' : 'search-results-loaded'\" ng-if=\"totalCount &gt; 0\">\n                <div ng-init=\"r = result\" ng-repeat=\"result in results\">\n                <div class=\"stackoverflow-update\">\n                    <div class=\"update\">\n                    <div class=\"update-meta\">\n                        <div class=\"row\">\n                        <div class=\"large-6 columns qtn-stats\">\n\n                            <div class=\"votes-count\">\n                            <h4 ng-bind=\"r._source.up_vote_count\"> </h4>\n                            <p ng-bind-template=\"Votes\"> </p>\n                            </div>\n                            <div class=\"answer-count\" ng-class=\"(r._source.answers[0].is_accepted == true) ? 'accepted-answer' : '' \">\n                            <h4 ng-bind=\"r._source.answer_count\"> </h4>\n                            <p ng-bind-template=\"Answers\"> </p>\n                            </div>\n                            <div class=\"views-count\">\n                            <h4 ng-bind=\"r._source.view_count\"> </h4>\n                            <p ng-bind-template=\"Views\"> </p>\n                            </div>\n                        </div>\n\n                        <div class=\"large-18 columns\">\n                            <a class=\"qtn-title\" ng-href=\"{{r._source.sys_url_view}}\" ng-bind-html=\"r._source.sys_title\"> </a>\n                            <p class=\"qtn-content\" ng-bind-html=\"r | question\"> </p>\n\n                            <div class=\"callout qtn-answer\" ng-class=\"r._source.answers[0] ? 'display-answer' : 'hide-answer' \">\n                            <p ng-show=\"r._source.answers[0].is_accepted == true\">\n                                <strong ng-bind-template=\"Accepted answer: \"> </strong>\n                            </p>\n                            <p ng-show=\"r._source.answers[0].is_accepted == false\">\n                                <strong ng-bind-template=\"Latest answer: \"> </strong>\n                            </p>\n                            <p ng-bind=\"r._source.answers[0].body | htmlToPlaintext\"></p>\n                            <a ng-href=\"{{r._source.sys_url_view}}\" target=\"_blank\" rel=\"noopener noreferrer\" ng-bind-template=\"Read full question at Stack Overflow \u203A\"> </a>\n                            </div>\n                            <div class=\"so-tags\">\n                            <strong class=\"tag-label\" ng-bind-template=\"Tags:\"> </strong>\n                            <span class=\"tag\" ng-repeat=\"tag in r._source.sys_tags\" ng-bind=\"tag\"> </span>\n                            <span class=\"so-author\" ng-bind-template=\"{{r | stackDate}} | {{r | author}}\"> </span>\n                            </div>\n                        </div>\n                        </div>\n                    </div>\n                    </div>\n                </div>\n                </div>\n            </div>\n            </div>\n        </div>\n\n        <nav id=\"paginator\" ng-hide=\"loading\" ng-if=\"paginate.pages &gt; 1\"><span ng-bind-template=\"Showing {{params.from + 1}}-{{paginate.lastVisible}} of  {{totalCount}} results\"></span>\n            <ul class=\"pagination\">\n<li id=\"pagination-first\" ng-class=\"paginate.currentPage &lt; 2 ? 'unavailable': 'available'\">\n                <a ng-click=\"goToPage('first'); scrollPosition();\">First</a>\n            </li>\n            <li id=\"pagination-prev\" ng-class=\"paginate.currentPage &lt; 2 ? 'unavailable': 'available'\">\n                <a ng-click=\"goToPage('prev'); scrollPosition();\">Previous</a>\n            </li>\n            <li class=\"pagination-page-number\" id=\"pagination-{{$index}}\" ng-class=\"{current: page == paginate.currentPage}\" ng-repeat=\"page in paginate.pagesArray track by $index\">\n                <a ng-click=\"goToPage(page); scrollPosition();\" data-page=\"{{page}}\" ng-bind=\"page\"> </a>\n            </li>\n            <li id=\"pagination-next\" ng-class=\"paginate.currentPage &gt;= paginate.pages ? 'unavailable': 'available'\">\n                <a ng-click=\"goToPage('next'); scrollPosition();\">Next</a>\n            </li>\n            <li id=\"pagination-last\" ng-class=\"paginate.currentPage  == paginate.pages ? 'unavailable': 'available'\">\n                <a ng-click=\"goToPage('last'); scrollPosition();\">Last</a>\n            </li>\n            </ul></nav>\n</div>\n";
-                        return tpl;
-                    };
+                    _this._template = document.createElement("template");
                     return _this;
                 }
+                Object.defineProperty(DPStackOverflow.prototype, "template", {
+                    get: function () {
+                        return this._template;
+                    },
+                    set: function (data) {
+                        this._template.innerHTML = "\n        <style>\n\n        </style>\n        <label for=\"filterByProduct\">Filter by Product</label>\n        <select id=\"filterByProduct\" name=\"filter-by-product\" ng-change=\"updateSearch(); resetPagination();\" ng-model=\"params.product\">\n<div ng-app=\"search\">\n<div class=\"row\" ng-controller=\"SearchController\">\n    <div class=\"large-24 columns\">\n    <div class=\"row\">\n        <div class=\"large-24 columns\">\n        <form class=\"search-bar\" ng-submit=\"updateSearch(); resetPagination();\" role=\"search\"> </form>\n        </div>\n        <div class=\"large-24 columns\" id=\"scrollPoint\">\n        <div class=\"row\">\n            <div class=\"large-14 columns stackoverflow-filters\">\n            <label for=\"filterByProduct\">Filter by Product</label>\n\n            <div class=\"styled-select\">\n<select id=\"filterByProduct\" name=\"filter-by-product\" ng-change=\"updateSearch(); resetPagination();\" ng-model=\"params.product\">\n    <option value=\"\">Show all</option>\n    <option value=\"openjdk\">OpenJDK</option>\n    <option value=\"rhamt\">Red Hat Application Migration Toolkit</option>\n    <option value=\"cdk\">Red Hat Developer Container Kit</option>\n    <option value=\"developertoolset\">Red Hat Developer Toolset</option>\n    <option value=\"rhel\">Red Hat Enterprise Linux</option>\n    <option value=\"amq\">Red Hat JBoss AMQ</option>\n    <option value=\"bpmsuite\">Red Hat JBoss BPM Suite</option>\n    <option value=\"brms\">Red Hat Decision Manager</option>\n    <option value=\"datagrid\">Red Hat JBoss Data Grid</option>\n    <option value=\"datavirt\">Red Hat JBoss Data Virtualization</option>\n    <option value=\"devstudio\">Red Hat JBoss Developer Studio</option>\n    <option value=\"eap\">Red Hat JBoss Enterprise Application Platform</option>\n    <option value=\"fuse\">Red Hat JBoss Fuse</option>\n    <option value=\"webserver\">Red Hat JBoss Web Server</option>\n    <option value=\"rhmap\">Red Hat Mobile Application Platform</option>\n    <option value=\"rhoar\">Red Hat Openshift Application Runtimes</option>\n    <option value=\"openshift\">Red Hat OpenShift Container Platform</option>\n    <option value=\"softwarecollections\">Red Hat Software Collections</option>\n    <option value=\"dotnet\">.NET Core for Red Hat Enterprise Linux</option>\n</select>\n</div>\n            </div>\n\n            <div class=\"large-10 columns\">\n            <div class=\"sorting so-sorting\">\n                <p ng-if=\"totalCount &gt; 10\">Show<select class=\"results-count\" ng-change=\"updateSearch()\" ng-model=\"params.size\"><option value=\"10\">10</option>\n<option value=\"25\">25</option>\n<option value=\"50\">50</option>\n<option value=\"100\">100</option></select>results per page</p>\n            </div>\n            </div>\n        </div>\n\n        <div class=\"row\">\n            <div class=\"large-24 columns\">\n            <h3 class=\"results-title\" ng-bind-template=\"No results found\" ng-if=\"totalCount &lt;= 0\"> </h3>\n\n            <h4 class=\"results-sub-title\" ng-bind-template=\"Please select a different product\" ng-if=\"totalCount &lt;= 0\"> </h4>\n\n            <div class=\"stackoverflow-results-container\" ng-class=\"loading ? 'invisible' : 'search-results-loaded'\" ng-if=\"totalCount &gt; 0\">\n                <div ng-init=\"r = result\" ng-repeat=\"result in results\">\n                <div class=\"stackoverflow-update\">\n                    <div class=\"update\">\n                    <div class=\"update-meta\">\n                        <div class=\"row\">\n                        <div class=\"large-6 columns qtn-stats\">\n\n                            <div class=\"votes-count\">\n                            <h4 ng-bind=\"r._source.up_vote_count\"> </h4>\n                            <p ng-bind-template=\"Votes\"> </p>\n                            </div>\n                            <div class=\"answer-count\" ng-class=\"(r._source.answers[0].is_accepted == true) ? 'accepted-answer' : '' \">\n                            <h4 ng-bind=\"r._source.answer_count\"> </h4>\n                            <p ng-bind-template=\"Answers\"> </p>\n                            </div>\n                            <div class=\"views-count\">\n                            <h4 ng-bind=\"r._source.view_count\"> </h4>\n                            <p ng-bind-template=\"Views\"> </p>\n                            </div>\n                        </div>\n\n                        <div class=\"large-18 columns\">\n                            <a class=\"qtn-title\" ng-href=\"{{r._source.sys_url_view}}\" ng-bind-html=\"r._source.sys_title\"> </a>\n                            <p class=\"qtn-content\" ng-bind-html=\"r | question\"> </p>\n\n                            <div class=\"callout qtn-answer\" ng-class=\"r._source.answers[0] ? 'display-answer' : 'hide-answer' \">\n                            <p ng-show=\"r._source.answers[0].is_accepted == true\">\n                                <strong ng-bind-template=\"Accepted answer: \"> </strong>\n                            </p>\n                            <p ng-show=\"r._source.answers[0].is_accepted == false\">\n                                <strong ng-bind-template=\"Latest answer: \"> </strong>\n                            </p>\n                            <p ng-bind=\"r._source.answers[0].body | htmlToPlaintext\"></p>\n                            <a ng-href=\"{{r._source.sys_url_view}}\" target=\"_blank\" rel=\"noopener noreferrer\" ng-bind-template=\"Read full question at Stack Overflow \u203A\"> </a>\n                            </div>\n                            <div class=\"so-tags\">\n                            <strong class=\"tag-label\" ng-bind-template=\"Tags:\"> </strong>\n                            <span class=\"tag\" ng-repeat=\"tag in r._source.sys_tags\" ng-bind=\"tag\"> </span>\n                            <span class=\"so-author\" ng-bind-template=\"{{r | stackDate}} | {{r | author}}\"> </span>\n                            </div>\n                        </div>\n                        </div>\n                    </div>\n                    </div>\n                </div>\n                </div>\n            </div>\n            </div>\n        </div>\n\n        <nav id=\"paginator\" ng-hide=\"loading\" ng-if=\"paginate.pages &gt; 1\"><span ng-bind-template=\"Showing {{params.from + 1}}-{{paginate.lastVisible}} of  {{totalCount}} results\"></span>\n            <ul class=\"pagination\">\n<li id=\"pagination-first\" ng-class=\"paginate.currentPage &lt; 2 ? 'unavailable': 'available'\">\n                <a ng-click=\"goToPage('first'); scrollPosition();\">First</a>\n            </li>\n            <li id=\"pagination-prev\" ng-class=\"paginate.currentPage &lt; 2 ? 'unavailable': 'available'\">\n                <a ng-click=\"goToPage('prev'); scrollPosition();\">Previous</a>\n            </li>\n            <li class=\"pagination-page-number\" id=\"pagination-{{$index}}\" ng-class=\"{current: page == paginate.currentPage}\" ng-repeat=\"page in paginate.pagesArray track by $index\">\n                <a ng-click=\"goToPage(page); scrollPosition();\" data-page=\"{{page}}\" ng-bind=\"page\"> </a>\n            </li>\n            <li id=\"pagination-next\" ng-class=\"paginate.currentPage &gt;= paginate.pages ? 'unavailable': 'available'\">\n                <a ng-click=\"goToPage('next'); scrollPosition();\">Next</a>\n            </li>\n            <li id=\"pagination-last\" ng-class=\"paginate.currentPage  == paginate.pages ? 'unavailable': 'available'\">\n                <a ng-click=\"goToPage('last'); scrollPosition();\">Last</a>\n            </li>\n            </ul></nav>\n</div>\n";
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
                 DPStackOverflow.prototype.connectedCallback = function () {
-                    _super.prototype.render.call(this, this.template(this));
+                    this.template = '';
+                    _super.prototype.render.call(this);
                 };
                 return DPStackOverflow;
             }(rhelement_7.default));

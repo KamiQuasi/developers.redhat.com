@@ -1,9 +1,13 @@
 import RHElement from '@rhelements/rhelement';
 
 export default class DPCategoryItemList extends RHElement {
-    template = el => {
-        const tpl = document.createElement("template");
-        tpl.innerHTML = `
+    _template = document.createElement("template");
+    
+    get template() {
+        return this._template;
+    }
+    set template(data: any) {
+       this._template.innerHTML = `
             <style>
             :host[visible] {
                 display: block;
@@ -65,7 +69,6 @@ export default class DPCategoryItemList extends RHElement {
             <slot></slot>
             </div>
             `;
-        return tpl;
     }
 
     _index = 1;
@@ -77,7 +80,8 @@ export default class DPCategoryItemList extends RHElement {
     set index(val) {
         if (this._index === val) return;
         this._index = val;
-        super.render(this.template(this));
+        this.template = this;
+        super.render();
     }
 
     get visible() {
@@ -103,7 +107,8 @@ export default class DPCategoryItemList extends RHElement {
     }
 
     connectedCallback() {
-        super.render(this.template(this));
+        this.template = this;
+        super.render();
     }
 
     static get observedAttributes() { 

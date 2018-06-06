@@ -2,9 +2,13 @@ import RHElement from '@rhelements/rhelement';
 //import fontawesome from '@fortawesome/fontawesome';
 
 export default class DPProductShortTeaser extends RHElement {
-    template = el => {
-        const tpl = document.createElement("template");
-        tpl.innerHTML = `
+    _template = document.createElement("template");
+    
+    get template() {
+        return this._template;
+    }
+    set template(data: any) {
+       this._template.innerHTML = `
 <style>
     :host { 
         font-family: Overpass;
@@ -43,13 +47,12 @@ export default class DPProductShortTeaser extends RHElement {
         line-height: 25px;
     }
 </style>
-<h4><a href="${el.link}">${el.name}</a></h4>
+<h4><a href="${data.link}">${data.name}</a></h4>
 <div>
 <slot></slot>
 </div>
-<a class="more" href="${el.downloadLink}">View all downloads <i class="fas fa-caret-right"></i></a>
+<a class="more" href="${data.downloadLink}">View all downloads <i class="fas fa-caret-right"></i></a>
         `;
-        return tpl;
     }
 
     _name: string;
@@ -85,7 +88,8 @@ export default class DPProductShortTeaser extends RHElement {
     }
 
     connectedCallback() {
-        super.render(this.template(this));
+        this.template = this;
+        super.render();
 
         // fontawesome.dom.i2svg({node: undefined, callback: undefined});
     }

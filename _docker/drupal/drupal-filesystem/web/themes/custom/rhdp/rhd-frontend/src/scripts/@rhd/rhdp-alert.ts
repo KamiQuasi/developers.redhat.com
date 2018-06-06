@@ -3,21 +3,25 @@ import RHElement from '@rhelements/rhelement';
 // import * as faTimes from '@fortawesome/fontawesome-pro-solid/faTimes';
 
 export default class RHDPAlert extends RHElement {
-    template = el => {
-        const tpl = document.createElement("template");
-        tpl.innerHTML = `
+    _template = document.createElement("template");
+    
+    get template() {
+        return this._template;
+    }
+    set template(data: any) {
+       this._template.innerHTML = `
         <style>
         :host {
             color: #363636 !important;
             display: flex;
-            flex-direction: ${el.size !== 'xl' ? 'row' : 'column'};
+            flex-direction: ${data.size !== 'xl' ? 'row' : 'column'};
             border-width: 1px;
             border-style: solid;
             padding: 10px 20px;
             margin: 1.5em auto;
             font-size: 1em;
-            background-color: ${el.background};
-            border-color: ${el.border};
+            background-color: ${data.background};
+            border-color: ${data.border};
             line-height: 24px;
             vertical-align: middle;
         }
@@ -35,7 +39,7 @@ export default class RHDPAlert extends RHElement {
             display: block;
             position: relative;
             margin-right: 10px;
-            ${el.size !== 'xl' ? '' : `
+            ${data.size !== 'xl' ? '' : `
             display: inline;
             float: left;
             margin-left: 1em;
@@ -52,14 +56,13 @@ export default class RHDPAlert extends RHElement {
         }
         
         </style>
-        <img src="${el.icon}">
-        ${el.size === 'xl' ? '<h3>' : ''}
-        ${el.heading ? `<strong>${el.heading}</strong>` : ''}
-        ${el.size === 'xl' ? '</h3>' : ''}
+        <img src="${data.icon}">
+        ${data.size === 'xl' ? '<h3>' : ''}
+        ${data.heading ? `<strong>${data.heading}</strong>` : ''}
+        ${data.size === 'xl' ? '</h3>' : ''}
         <slot></slot>
-        ${el.size === 'xl' ? `<a class="close"><i class="fas fa-times"</a>` : ''}`;
+        ${data.size === 'xl' ? `<a class="close"><i class="fas fa-times"</a>` : ''}`;
         // ${el.size === 'xl' ? `<a class="close">${fontawesome.icon(faTimes)}</a>` : ''}`;
-        return tpl;
     }
     
     _type = 'info';
@@ -156,7 +159,8 @@ export default class RHDPAlert extends RHElement {
     }
 
     connectedCallback() {
-        super.render(this.template(this));
+        this.template = this;
+        super.render();
 
         this.addEventListener('click', e => {
             if (e.target && e.target['className'] === 'close') {
@@ -171,7 +175,8 @@ export default class RHDPAlert extends RHElement {
 
     attributeChangedCallback(name, oldVal, newVal) {
         this[name] = newVal;
-        super.render(this.template(this));;
+        this.template = this;
+        super.render();;
     }
 }
 
