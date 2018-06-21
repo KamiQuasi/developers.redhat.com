@@ -73,6 +73,7 @@ h4 {
         border-width: 16px;
         margin-left: -16px;
     }
+    
 
     img, svg { flex: 0 0 150px; height: 150px; padding-right: 0; padding-bottom: 15px; }
 }

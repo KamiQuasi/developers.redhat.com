@@ -132,7 +132,7 @@ ${el.thumbnail ? `<div class="thumb"><img src="${el.thumbnail.replace('http:','h
 
     set description(val) {
         if (this._description === val) return;
-        this._description = val;
+        this._description = val.replace('>','&gt;').replace('<','&lt;');
     }
 
     get premium() {
