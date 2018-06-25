@@ -13,10 +13,7 @@ export default class DPCategoryItemList extends RHElement {
                 display: none;
                 flex: 1 1 100%;
                 grid-column: span 1;
-<<<<<<< HEAD
                 background-color: #ffffff;
-=======
->>>>>>> d81f8273967f63277be8b950f643934704a33d61
             }
 
             div {

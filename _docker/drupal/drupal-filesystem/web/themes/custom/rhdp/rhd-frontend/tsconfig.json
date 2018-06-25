@@ -10,6 +10,10 @@
         "pretty": true,
         "allowJs": true,
         "baseUrl": "src/scripts",
+        "paths": {
+            "@rhd": ["@rhd"],
+            "@rhelements": ["@rhelements"]
+        },
         "lib":[
           "dom", "es5", "es6"
         ],
