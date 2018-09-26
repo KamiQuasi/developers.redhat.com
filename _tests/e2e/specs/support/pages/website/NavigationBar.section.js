@@ -10,8 +10,8 @@ export class NavigationBar extends Base {
             mobileMenuOpen: '.mobile-tray-open',
             login: "//a[text()='Log In']",
             mobileNavToggle: 'button*=Menu',
-            searchToggle: '//*[@id="block-rhdnavigation"]/ul/li[@class="rhd-nav-search"]',
-            searchOpen: '.rhd-nav-search.open',
+            searchToggle: '.rhd-search-toggle-open',
+            searchOpen: '.rhd-search-toggle-close',
             searchBar: '.user-search',
             searchButton: '#search-button',
             navToggle: 'body > div.site-wrapper > header > div > div > a',
@@ -76,7 +76,7 @@ export class NavigationBar extends Base {
         if (this.displayed(this.getSelector('mobileMenuOpen'))) {
             return this.clickOn(this.searchBtn().value[1]);
         } else {
-            return this.clickOn(this.searchBtn().value[0]);
+            return this.keyPress(13);
         }
     }
 }

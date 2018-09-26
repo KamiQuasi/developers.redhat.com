@@ -126,6 +126,13 @@ export class Base {
         }
     }
 
+    keyPress(key) {
+        let event = new KeyboardEvent('keypress',{
+            bubbles: true, cancelable: true, keyCode: 13
+        });
+        browser.dispatchEvent(event);
+    }
+
     isSelected(selector) {
         if (typeof selector === 'string') {
             return browser.isSelected(selector);
