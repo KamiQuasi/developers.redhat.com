@@ -99,10 +99,12 @@ module:
   quickedit: 0
   rdf: 0
   redhat_developers: 0
+  redirect: 0
   rest: 0
   rhd_assemblies: 0
   rhd_common: 0
   rhd_disqus: 0
+  rhd_eloqua_embed: 0
   rhd_guzzle_throttle: 0
   rhd_microsite: 0
   rhd_solution_overview: 0

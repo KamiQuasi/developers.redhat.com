@@ -1,10 +1,10 @@
-import {Base} from "../support/pages/Base.page";
+import {Page} from "../support/pages/Page";
 
 const qs = require('querystring');
 
-export class Utils extends Base {
+export class Utils extends Page {
 
-    logout(baseUrl) {
+    cleanSession(baseUrl) {
         let logoutLink;
         let encodedURL = qs.escape(baseUrl);
         if (process.env.RHD_BASE_URL === 'https://developers.stage.redhat.com') {
@@ -15,4 +15,11 @@ export class Utils extends Base {
         return this.visit(logoutLink);
     }
 
+    logout() {
+        try {
+            return this.userLogout()
+        } catch (e) {
+            return this.cleanSession(process.env.RHD_BASE_URL)
+        }
+    }
 }
