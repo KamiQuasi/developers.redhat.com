@@ -244,6 +244,16 @@
     <css-placeholder token="{{ placeholder_token }}">
     {% if (rhd_sentry_track) %}
     <script src="{{ rhd_sentry_script }}" crossorigin="anonymous"></script>
+    <script>
+    if(Sentry) {
+      Sentry.init({ 
+        dsn: '{{ rhd_sentry_code }}',
+        environment: '{{rhd_environment}}',
+        beforeSend: function(event, hint) {
+          
+        }
+      });
+    }</script>
     <script>Raven.config('{{ rhd_sentry_code }}', { environment: '{{rhd_environment}}', whitelistUrls: [/redhat\.com/] }).install()</script>
     {% endif %}
     <js-placeholder token="{{ placeholder_token }}">
