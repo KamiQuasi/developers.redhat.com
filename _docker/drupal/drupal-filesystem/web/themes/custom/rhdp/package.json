@@ -9,6 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "rhd-frontend": "1.0.0"
+    "rhd-frontend": "^2.0.0"
   }
 }

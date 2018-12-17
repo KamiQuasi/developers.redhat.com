@@ -79,13 +79,13 @@ else
     exit 1
 fi
 
-echo "Building css/js for theme"
-cd ${THEME}/rhd-frontend
-npm install && npm run-script build 
+echo "Downloading css/js for theme"
+cd ${THEME}
+npm install
 cd ${PROJ}
 
 echo "Sanitizing the database"
-${WEB}/../vendor/bin/drush --root=${WEB} sqlsan --sanitize-password=drupal --sanitize-email=user+%uid@example.com
+${WEB}/../vendor/bin/drush --root=${WEB} sqlsan --sanitize-password=drupal --sanitize-email=user+%uid@example.com 
 
 echo "Running drush cr"
 ${WEB}/../vendor/bin/drush --root=${WEB} cr

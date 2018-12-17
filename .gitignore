@@ -35,6 +35,7 @@ _docker/searchisko/searchisko_es_data.tar.gz
 _docker/awestruct/overlay/ssh-key/id*
 _docker/awestruct/overlay/ssh-key/known_hosts
 # Wes' front end deps for local dev
+.npmrc
 node_modules/
 bower_components/
 components/*
