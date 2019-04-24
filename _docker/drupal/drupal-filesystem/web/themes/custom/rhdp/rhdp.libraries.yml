@@ -11,7 +11,10 @@ base-theme:
   # This should be all of the style sheets broken up according to smaccs
   css:
     base:
-      rhd-frontend/rhd.min.css: { minified: true }
+      https://static.redhat.com/libs/redhat/redhat-theme/1/advanced-theme.css: {type: external }
+      js/@patternfly/pfe-layouts/pfe-layouts.css: {}
+      #css/rhd.min.css: { minified: true }
+
   js:
     js/menu.js: {}
     js/all.min.js: { minified: true }

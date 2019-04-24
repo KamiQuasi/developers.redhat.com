@@ -1,0 +1,51 @@
+{
+  "_from": "@patternfly/pfe-layouts@^1.0.0-prerelease.9",
+  "_id": "@patternfly/pfe-layouts@1.0.0-prerelease.11",
+  "_inBundle": false,
+  "_integrity": "sha512-IxsiQ1bfoDP9bKM+bzHaG2XYr1QSy0uC+jGK5z4livK2svjfSkNugt5j0JoF/NV02KNJFG24RmeQCrZR7cNydw==",
+  "_location": "/@patternfly/pfe-layouts",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "@patternfly/pfe-layouts@^1.0.0-prerelease.9",
+    "name": "@patternfly/pfe-layouts",
+    "escapedName": "@patternfly%2fpfe-layouts",
+    "scope": "@patternfly",
+    "rawSpec": "^1.0.0-prerelease.9",
+    "saveSpec": null,
+    "fetchSpec": "^1.0.0-prerelease.9"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/@patternfly/pfe-layouts/-/pfe-layouts-1.0.0-prerelease.11.tgz",
+  "_shasum": "16e28f333e888dbb99fa41821d6c38c6a5e257c1",
+  "_spec": "@patternfly/pfe-layouts@^1.0.0-prerelease.9",
+  "_where": "/home/ldary/Projects/rh/rhd-frontend",
+  "bundleDependencies": false,
+  "contributors": [
+    {
+      "name": "Mark Caron",
+      "email": "mark@redhat.com",
+      "url": "https://github.com/markcaron"
+    }
+  ],
+  "dependencies": {
+    "@patternfly/pfe-sass": "^1.0.0-prerelease.11"
+  },
+  "deprecated": false,
+  "description": "pfe-layouts for Red Hat's Customer Portal and PFElements",
+  "gitHead": "95d307853357cfffe6afb7970d707a005f924f23",
+  "license": "MIT",
+  "name": "@patternfly/pfe-layouts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "../../node_modules/.bin/gulp",
+    "dev": "../../node_modules/.bin/gulp dev"
+  },
+  "version": "1.0.0-prerelease.11"
+}
