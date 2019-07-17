@@ -16,6 +16,7 @@ base-theme:
       rhd-frontend/rhd.min.css: { minified: true }
   js:
     js/menu.js: {}
+    js/chartbeat.js: {}
     js/all.min.js: { minified: true }
     https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.3/angular.min.js: { type: external, minified: true }
     https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.3.3/angular-sanitize.min.js: { type: external, minified: true }
