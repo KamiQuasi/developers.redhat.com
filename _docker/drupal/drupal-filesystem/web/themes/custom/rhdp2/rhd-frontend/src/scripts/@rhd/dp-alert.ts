@@ -49,6 +49,14 @@ export class DPAlert extends PFElement {
             padding: 16px;
         }
 
+        .pf-screen-reader {
+            position: fixed;
+            overflow: hidden;
+            clip: rect(0,0,0,0);
+            white-space: nowrap;
+            border: 0;
+        }
+
         .pf-c-alert__description {
             background-color: #fff;
             color: #151515;
@@ -129,13 +137,13 @@ export class DPAlert extends PFElement {
             color: var(--alert-color--text);
         }
 
-        :host([type="error"]) .pf-c-alert__icon {
+        :host([type="danger"]) .pf-c-alert__icon {
             --alert-color--background: #c9190b;
             --alert-color--text: #470000;
             background-color: var(--alert-color--background);
             color: var(--alert-color--text);
         }
-        :host([type="error"]) .pf-c-alert__title {
+        :host([type="danger"]) .pf-c-alert__title {
             --alert-color--text: #470000;
             color: var(--alert-color--text);
         }
@@ -186,24 +194,25 @@ export class DPAlert extends PFElement {
         }
 
         </style>
-        <div class="pf-c-alert" aria=label="alert">
+        <div class="pf-c-alert ${this.inline ? 'pf-m-inline':''}" aria=label="alert">
         <div class="pf-c-alert__icon">
-            <img src="${this.icon}">
+            <i class="${this.icon}" aria-hidden="true"></i>
         </div>
-        ${this.size === 'xl' ? '<h4 class="pf-c-alert__title">' : ''}
-        ${this.heading ? `<h4 class="pf-c-alert__title">${this.heading}</h4>` : ''}
-        ${this.size === 'xl' ? '</h4>' : ''}
-        <div class="pf-c-alert__description"><p><slot>${this.text}</slot></p></div>
-        ${this.size === 'xl' ? `<div class="pf-c-alert__action"><a class="close" href="#"><i class="fas fa-times"></i></a></div>` : ''}
+        ${this.title ? `<h4 class="pf-c-alert__title">
+            <span class="pf-screen-reader">${this.type.replace(this.type.match(/[a-z]/)[0],this.type.match(/[a-z]/)[0].toUpperCase())}</span>
+            ${this.title}
+        </h4>` : ''}
+        <div class="pf-c-alert__description"><slot>${this.text}</slot></div>
+        <div class="pf-c-alert__action"><slot name="dp-alert__description"></slot></div>
         </div>`;
     }
 
     static get tag() { return 'dp-alert'; }
 
     _type = 'info';
-    _size : string;
-    _heading : string;
-    _icon = 'https://static.jboss.org/rhd/images/icons/RHD_alerticon_info.svg';
+    _inline : string;
+    _title : string;
+    _icon = 'fas fa-bell';
     _background = '#dcedf8';
     _border = '#87aac1';
     _text : string;
@@ -216,37 +225,38 @@ export class DPAlert extends PFElement {
         this._type = val;
         switch(this._type) {
             case 'success':
-                this.icon = 'https://static.jboss.org/rhd/images/icons/RHD_alerticon_success.svg';
+                this.icon = 'fas fa-check-circle';
                 break;
             case 'warning':
-                this.icon = 'https://static.jboss.org/rhd/images/icons/RHD_alerticon_warning.svg';
+                this.icon = 'fas fa-exclamation-triangle';
                 break;
-            case 'error':
-                this.icon = 'https://static.jboss.org/rhd/images/icons/RHD_alerticon_error.svg';
+            case 'danger':
+                this.icon = 'fas fa-exclamation-circle';
                 break;
             case 'info':
+                this.icon = 'fas fa-info-circle';
             default:
-                this.icon = 'https://static.jboss.org/rhd/images/icons/RHD_alerticon_info.svg';
+                this.icon = 'fas fa-bell';
                 break;
         }
         this.setAttribute('type', this._type);
     }
 
-    get size() {
-        return this._size;
+    get inline() {
+        return this._inline;
     }
-    set size(val) {
-        if (this._size === val) return;
-        this._size = val;
-        this.setAttribute('size', this._size)
+    set inline(val) {
+        if (this._inline === val) return;
+        this._inline = val;
+        this.setAttribute('inline', this._inline)
     }
 
-    get heading() {
-        return this._heading;
+    get title() {
+        return this._title;
     }
-    set heading(val) {
-        if (this._heading === val) return;
-        this._heading = val;
+    set title(val) {
+        if (this._title === val) return;
+        this._title = val;
     }
 
     get text() {
@@ -272,6 +282,10 @@ export class DPAlert extends PFElement {
     connectedCallback() {
         super.connectedCallback();
 
+        if (top['FontAwesome']) {
+            top['FontAwesome'].dom.i2svg({node: this.shadowRoot});
+        }
+
         let closer = this.shadowRoot.querySelector('.close');
         if (closer) {
             this.addEventListener('click', e => {
@@ -287,7 +301,7 @@ export class DPAlert extends PFElement {
     }
 
     static get observedAttributes() {
-        return ['type', 'size', 'heading'];
+        return ['type', 'inline', 'title'];
     }
 
     attributeChangedCallback(name, oldVal, newVal) {
